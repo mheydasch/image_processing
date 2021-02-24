@@ -42,8 +42,10 @@ def subtractFlatfield(path, flatfield):
                 imarray=np.array(im)                        
                 back_subtracted=np.divide(imarray, flatf)
                 back_subtracted_tif=Image.fromarray(back_subtracted)
-                saveFolder=createFolder(os.path.join(path, 'flatfield_corrected'))
+                saveFolder=os.path.join(path, 'flatfield_corrected')
+                createFolder(saveFolder)
                 back_subtracted_tif.save(os.path.join(saveFolder, ('Flatcorr_'+ item)))
+                print(item, 'processed')
         except (AttributeError) as e:
             print(e)
             next
