@@ -12,6 +12,17 @@ import imageio
 import os
 import math
 from PIL import Image
+
+
+def parseArguments():
+  # Define the parser and read arguments
+  parser = argparse.ArgumentParser(description='collect segmentation files into one directory')
+  parser.add_argument('-d', '--dir', type=str, help='The directory where the png files are', required=True)
+  parser.add_argument('-id', '--ident', type=str, help='Identifier of the images that should be grouped into one table.', required=True)
+  args = parser.parse_args()
+  return(args)
+  
+  
 def mkdir(directory):
     try:
         if not os.path.exists(directory):
@@ -82,5 +93,13 @@ def imageCreate(path):
         array[:,:100]=[0,0,0]
         img=Image.fromarray(array)
         img.save(os.path.join(path, 'black2img{}.png'.format(i)))
-    
+
+if __name__ == '__main__':
+    args=parseArguments()   
+    path=args.dir
+    ident=args.ident
+
+    imageImport(path, ident)
+
+    print(args)
     
