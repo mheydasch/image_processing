@@ -13,7 +13,6 @@ import re
 import argparse
 
 #%% Image_substraction
-imagepath='/Volumes/imaging.data/Max/REF52/DLC_1/SiDLC_43/'
 def parseArguments():
   # Define the parser and read arguments
   parser = argparse.ArgumentParser(description='subtract a Flatfield image from all images in the folder')

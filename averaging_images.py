@@ -34,20 +34,6 @@ tif=Image.fromarray(averaged)
 im.save(os.path.join(path, ('Averaged_'+ item)))
 
 
-#%% Image_substraction
-imagepath='/Volumes/imaging.data/Max/REF52/DLC_1/SiDLC_43/'
-
-for item in files:
-    try:
-        if re.search(ch1, item).group('Channel1')!=None:
-            im=Image.open(os.path.join(path, item))
-            imarray=np.array(im)                        
-            back_subtracted=np.divide(imarray, tif)
-            back_subtracted_tif=Image.fromarray(back_subtracted)
-            back_subtracted_tif.save(os.path.join(path, 'averaged', ('Averaged_'+ item)))
-    except (AttributeError) as e:
-        print(e)
-        next
 
 # =============================================================================
 # im=Image.open(imagepath)
