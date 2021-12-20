@@ -15,7 +15,7 @@ def parseArguments():
   # Define the parser and read arguments
   parser = argparse.ArgumentParser(description='collect segmentation files into one directory')
   parser.add_argument('-d', '--dir', type=str, help='The directory where the knockdown folders are', required=True)
-  parser.add_argument('-l', '--length', type=str, help='how long is the timelapse supposed to be', required=True)
+  parser.add_argument('-l', '--length', type=int, help='how long is the timelapse supposed to be', required=True)
   #parser.add_argument('-p', '--prefix', type=str, help='prefix of the movie', required=True)
 
   args = parser.parse_args()
