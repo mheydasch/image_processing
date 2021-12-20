@@ -12,13 +12,14 @@ import imageio
 import os
 import math
 from PIL import Image
+import argparse
 
 
 def parseArguments():
   # Define the parser and read arguments
   parser = argparse.ArgumentParser(description='collect segmentation files into one directory')
   parser.add_argument('-d', '--dir', type=str, help='The directory where the png files are', required=True)
-  parser.add_argument('-id', '--ident', type=str, help='Identifier of the images that should be grouped into one table.', required=True)
+  parser.add_argument('-id', '--ident', type=str, help='Identifier of the images that should be grouped into one table, accepts a comma deliminated list', required=True)
   args = parser.parse_args()
   return(args)
   
@@ -29,13 +30,15 @@ def mkdir(directory):
             os.makedirs(directory)
     except OSError:
         print ('Error: Creating directory. ' + directory)
-Image.MAX_IMAGE_PIXELS = 933120000
+
 
 def imageImport(path, identifier):
-    imagelist=[]
+    Image.MAX_IMAGE_PIXELS = 933120000
+    imagelist=[]   
     for i in os.listdir(path):
+        matched_ident=[l in i for l in identifier]
         
-        if '.png' in i and identifier in i:
+        if '.png' in i and False not in matched_ident:
             print(i)
             im=imageio.imread(os.path.join(path,i))
             imagelist.append(im)
@@ -76,10 +79,10 @@ def imageImport(path, identifier):
         print('png shape:',pngRow.shape) 
     to_del=list(range(0, imageShape[0]))
     pngRow=np.delete(pngRow, to_del, axis=1)
-    png=Image.fromarray(pngRow.astype(np.uint8))
-    subfolder=os.path.join(path,identifier)
+    png=Image.fromarray(pngRow.astype(np.uint16))
+    subfolder=os.path.join(path,''.join(identifier))
     mkdir(subfolder)
-    save_path=os.path.join(subfolder, identifier + '_pngMap.png')
+    save_path=os.path.join(subfolder, ''.join(identifier) + '_pngMap.png')
     png.save(save_path)
     print('Image saved as {}'.format(save_path))    
             
@@ -87,17 +90,25 @@ def imageImport(path, identifier):
     return pngRowList, pngRow
 
 
-def imageCreate(path):
-    for i in range(40):
+def imageCreate(path, rgb, n):
+    for i in range(n):
         array = np.zeros([100,100,3], dtype=np.uint8)
-        array[:,:100]=[0,0,0]
+        array[:,:100]=rgb
         img=Image.fromarray(array)
-        img.save(os.path.join(path, 'black2img{}.png'.format(i)))
+        if rgb[0]==0 and rgb[1] == 0 and rgb[2]==0:
+            name='black'
+        if rgb[0]!=0:
+            name='red'
+        if rgb[1]!=0:
+            name='green'
+        if rgb[2]!=0:
+            name='blue'
+        img.save(os.path.join(path, '{}{}img{}.png'.format(name,n,i)))
 
 if __name__ == '__main__':
     args=parseArguments()   
     path=args.dir
-    ident=args.ident
+    ident=[str(item) for item in args.ident.split(',')]
 
     imageImport(path, ident)
 
